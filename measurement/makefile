@@ -18,3 +18,6 @@ pipe.o : clock.c clock.h pipe.c
 		$(CC) $(FLAGS) -c pipe.c
 pipe : $(pipe_obj)
 		$(CC) $(FLAGS) -o pipe $(pipe_obj)
+socket: server.c client.c
+		$(CC) $(FLAGS) client.c -o client clock.o
+		$(CC) $(FLAGS) server.c -o server clock.o
