@@ -82,7 +82,7 @@ double frequency;
 double get_frequency()
 {
     struct timespec start, end;
-    int start_tick, end_tick;
+    uint64_t start_tick, end_tick;
     clock_gettime(CLOCK_MONOTONIC, &start);
     start_tick = get_tick();
     sleep(3);

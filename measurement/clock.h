@@ -5,9 +5,9 @@
 #include <stdint.h>
 #include <time.h>
 
-static int inline get_tick()
+static uint64_t inline get_tick()
 {
-    unsigned cycles_low, cycles_high;
+    uint64_t cycles_low, cycles_high;
     __asm__ volatile("CPUID\n\t"
                     "rdtsc" : "=a" (cycles_low), "=d" (cycles_high));
     return ( ((uint64_t)cycles_high << 32) | cycles_low );

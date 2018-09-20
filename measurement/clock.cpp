@@ -18,9 +18,9 @@ static void inline test_func()
     int tmp = 0;
 }
 
-static int inline hrclock::get_tick()
+static uint64_t inline hrclock::get_tick()
 {
-    unsigned cycles_low, cycles_high;
+    uint64_t cycles_low, cycles_high;
     __asm__ volatile("rdtsc" : "=a" (cycles_low), "=d" (cycles_high));
     return ( ((uint64_t)cycles_high << 32) | cycles_low );
 }
