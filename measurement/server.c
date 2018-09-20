@@ -19,7 +19,7 @@ int main(int argc, char const *argv[])
     char *mesg = "ack"; 
        
     // Creating socket file descriptor 
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == 0) 
     { 
         perror("socket failed"); 
         exit(EXIT_FAILURE); 
@@ -55,10 +55,18 @@ int main(int argc, char const *argv[])
         exit(EXIT_FAILURE); 
     }
     // while(1)
+    // {
+    int num = 1, total = 0;
+    int buffsize = atoi(argv[1]);
+    while(num > 0 && total < buffsize)
     {
-    read(new_socket , buffer, BUFFSIZE);
+        num = recv(new_socket , buffer, buffsize, 0);
+        total += num;
+        // printf("%d\n", num);
+    }
     send(new_socket , mesg , strlen(mesg) , 0 ); 
     // printf("Ack message sent\n"); 
-    }
+    // }
+    close(new_socket);
     return 0; 
 } 

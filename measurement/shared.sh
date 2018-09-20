@@ -5,6 +5,7 @@ SIZE_LIST=( 4 16 64 512 1024 4096 16384 65536 524288 1048576)
 for SIZE in "${SIZE_LIST[@]}"
 do 
     echo $SIZE
+    rm -f shared_$SIZE.txt
     for((c=1; c<=$NUM_ITERATIONS; c++)) 
     do
         ./sharedmem $SIZE >> shared_$SIZE.txt

@@ -63,6 +63,6 @@ int main(int argc, char *argv[]) {
     // if (atoi(argv[2]) == 0)
     // {
         double t = latency(buff_size);
-        printf("%f\t%f\n", t/1000.0, buff_size/t * (1000000000.0 /1024.0/1024.0));
+        printf("%f\n", t/1000.0);
     // }
 }

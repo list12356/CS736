@@ -62,12 +62,12 @@ double throughput(int mesg_size)
 
 double latency(int mesg_size)
 {
-    struct sockaddr_in address; 
-    int sock = 0, valread; 
+    struct timespec start, end, *diff;
     struct sockaddr_in serv_addr; 
+    int sock = 0, valread, rtn;
     char *message = malloc(sizeof(char)*mesg_size); 
     char buffer[BUFFSIZE] = {0}; 
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
+    if ((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) 
     { 
         printf("\n Socket creation error \n"); 
         return -1; 
@@ -84,23 +84,39 @@ double latency(int mesg_size)
         printf("\nInvalid address/ Address not supported \n"); 
         return -1; 
     } 
-   
+
+    clock_gettime(CLOCK_MONOTONIC, &start);    
+
     if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) 
     { 
         printf("\nConnection Failed \n"); 
         return -1; 
     }
+
     // int start = get_tick();
-    struct timespec start, end, *diff;
-    clock_gettime(CLOCK_MONOTONIC, &start);    
-    send(sock , message , mesg_size , 0 );
-    valread = read( sock , buffer, BUFFSIZE); 
-    // int end = get_tick();
+    rtn = send(sock , message , mesg_size , 0 );
+    if (rtn == -1)
+    {
+        printf("Error when sending message\n");
+        close(sock);
+        return 0;
+    }
+    
+    rtn = read( sock , buffer, BUFFSIZE); 
+    if (rtn == -1)
+    {
+        printf("Error when reading message\n");
+        close(sock);
+        return 0;
+    }
+
     clock_gettime(CLOCK_MONOTONIC, &end);
+
     diff = get_diff(&end, &start);
     uint64_t elapsed = diff->tv_sec * 1000000000LL + diff->tv_nsec;
-    double rate  = ((double) elapsed);
+    double rate  = (double) elapsed / 1000.0;
     printf("%f\n", rate);
+    close(sock);
     return rate;
 }
 
@@ -111,4 +127,5 @@ int main(int argc, char const *argv[])
     int mesg_size = atoi(argv[1]);
     // int opt = atoi(argv[2]);
     latency(mesg_size);
+    return 0;
 } 
