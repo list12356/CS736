@@ -28,7 +28,7 @@ double get_resolution_clock_time()
     struct timespec start, end, *diff;
     int try_num = 10000;
     double best = 10000;
-    while(try_num--)
+    while(try_num-- > 0)
     {
         clock_gettime(CLOCK_MONOTONIC, &start);
         test_func();
@@ -44,17 +44,39 @@ double get_resolution_clock_time()
 double get_resolution_rdtsc()
 {
     int start, end, best = 10000, elapsed = 0;
-    int try_num = 10000;
-    while(try_num--)
+    int try_num = 1000;
+    while(try_num-- > 0)
     {
         start = get_tick();
-        // test_func();
+        test_func();
         end = get_tick();
         if ((end - start) > 0 && (end - start) < best)
             best = end - start;
     }
     return (double) best / frequency;
 }
+
+double get_resolution_time_of_day()
+{
+    struct timeval start, end;
+    long best = 0;
+    int try_num = 10000;
+    long elapsed = 0;
+    while(try_num-- > 0)
+    {
+        gettimeofday(&start, NULL);
+        while(elapsed == 0)
+        {
+            test_func();
+            gettimeofday(&end, NULL);
+            elapsed = (end.tv_sec * 1000000000 + 1000*end.tv_usec)- (start.tv_sec * 1000000000 + 1000*start.tv_usec);
+        }
+        if (elapsed < best || best == 0)
+            best = elapsed;
+    }
+    return (double)best;
+}
+
 double frequency;
 
 double get_frequency()
