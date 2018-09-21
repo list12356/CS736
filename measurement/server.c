@@ -15,11 +15,18 @@ int main(int argc, char const *argv[])
     struct sockaddr_in address; 
     int opt = 1; 
     int addrlen = sizeof(address); 
-    char *buffer = malloc(sizeof(char) * BUFFSIZE); 
     char *mesg = "ack"; 
-       
+    int mesg_size = atoi(argv[1]);
+    int total;
+    char *buffer = malloc(sizeof(char) * mesg_size); 
+
+    if (argc > 2)
+        total = atoi(argv[2]);
+    else
+        total = mesg_size;
+
     // Creating socket file descriptor 
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == 0) 
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
     { 
         perror("socket failed"); 
         exit(EXIT_FAILURE); 
@@ -56,17 +63,16 @@ int main(int argc, char const *argv[])
     }
     // while(1)
     // {
-    int num = 1, total = 0;
-    int buffsize = atoi(argv[1]);
-    while(num > 0 && total < buffsize)
+    int num = 1, received = 0;
+    // while
+    while(num > 0 && received < total)
     {
-        num = recv(new_socket , buffer, buffsize, 0);
-        total += num;
-        // printf("%d\n", num);
+        // num = recv(new_socket , buffer, mesg_size, 0);
+        num = read(new_socket, buffer, mesg_size);
+        received += num;
+        // buffer += num;
+        // printf("%d\n", received);
     }
     send(new_socket , mesg , strlen(mesg) , 0 ); 
-    // printf("Ack message sent\n"); 
-    // }
-    close(new_socket);
     return 0; 
 } 

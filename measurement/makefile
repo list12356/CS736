@@ -27,5 +27,5 @@ precision.o: clock.c clock.h precision.c
 precision: precision.o clock.o
 		$(CC) $(FLAGS) -o precision precision.o clock.o
 
-sharedmem: shared_mem.c
-		$(CC) $(FLAGS) shared_mem.c -o sharedmem clock.o
+shared: shared_mem.c
+		$(CC) $(FLAGS) shared_mem.c -o shared clock.o
